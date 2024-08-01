@@ -14,19 +14,35 @@ def merge(load_dt="20240724"):
     df = read_df[cols]
     print(df.head(30))
     # 20240724날짜 울버린만 조회(20247781영화코드)
-    df_where = df[(df['movieCd'] == '20247781') & (df['load_dt'] == int(load_dt))].copy() #날짜 조건 load_dt 인자를 받기
-    print(df_where)
-    print(df_where.dtypes)
+    dw = df[(df['movieCd'] == '20235974') & (df['load_dt'] == int(load_dt))].copy() #날짜 조건 load_dt 인자를 받기
+    print(dw)
+    print(dw.dtypes)
     # 카테고리 타입 -> object
-    df_where['load_dt'] = df_where['load_dt'].astype('object')
-    df_where['multiMovieYn'] = df_where['multiMovieYn'].astype('object')
-    df_where['repNationCd'] = df_where['repNationCd'].astype('object')
-    print(df_where.dtypes)
-
-    df_where['multiMovieYn'] = df_where['multiMovieYn'].fillna("N").astype(str)
-    df_where['repNationCd'] = df_where['repNationCd'].fillna("F").astype(str)
+    dw['load_dt'] = dw['load_dt'].astype('object')
+    dw['multiMovieYn'] = dw['multiMovieYn'].astype('object')
+    dw['repNationCd'] = dw['repNationCd'].astype('object')
+    print(dw.dtypes)
+    
+    # NaN 값 unknown으로 변경
+    dw['multiMovieYn'] = dw['multiMovieYn'].fillna('unknown')
+    dw['repNationCd'] = dw['repNationCd'].fillna('unknown')
     #result = df_where.concat(['multiMovieYn','repNationCd'], ignore_index=True, sort=False)
-    print(df_where)
-    return df_where
+    
+    #머지
+    u_mul = dw[dw['multiMovieYn'] == 'unknown']
+    u_nat = dw[dw['repNationCd'] == 'unknown']
+    m_df = pd.merge(u_mul, u_nat, on='movieCd', suffixes=('_m', '_n'))
+    print(m_df)
+    m_df.loc[m_df['multiMovieYn_m'] == 'unknown', 'multiMovieYn_m'] = m_df['multiMovieYn_n']
+    print(m_df)
+    print(m_df.columns)
+    print(m_df.columns[5:])
+    print(m_df)
+    m_df.drop(m_df.columns[5:], axis=1, inplace = True) #5부터 axis 열 다짜름 #  m_df에 적용 시키는게 inplace = True
+
+
+    #print()
+    print(m_df)
+    return m_df
 
 merge()
