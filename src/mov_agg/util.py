@@ -14,7 +14,8 @@ def merge(load_dt="20240724"):
     df = read_df[cols]
     print(df.head(30))
     # 20240724날짜 울버린만 조회(20247781영화코드)
-    dw = df[(df['movieCd'] == '20235974') & (df['load_dt'] == int(load_dt))].copy() #날짜 조건 load_dt 인자를 받기
+    #dw = df[(df['movieCd'] == '20235974') & (df['load_dt'] == int(load_dt))].copy() #날짜 조건 load_dt 인자를 받기
+    dw = df[(df['load_dt'] == int(load_dt))].copy() #날짜 조건 load_dt 인자를 받기
     print(dw)
     print(dw.dtypes)
     # 카테고리 타입 -> object
